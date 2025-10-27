@@ -1,0 +1,6 @@
+# 모든 텍스트 파일은 자동으로 감지하여 LF로 저장
+* text=auto eol=lf
+
+# Windows 실행 스크립트(.bat, .cmd)는 CRLF 유지
+*.bat text eol=crlf
+*.cmd text eol=crlf
