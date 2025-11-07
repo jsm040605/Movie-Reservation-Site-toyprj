@@ -1,14 +1,12 @@
-package com.example.theater_proj.movie.dao;
+package com.example.theater_proj.movie.repository;
 
-import com.example.theater_proj.movie.dto.RetrieveAllMoviesDTO;
 import com.example.theater_proj.movie.entity.Movie;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-@Component
-public class MovieDaoService {
+@Repository
+public class MemoryMovieRepository implements MovieRepository {
     private static Map<Integer, Movie> store = new HashMap<>();
     private static Integer sequence = 0;
 
@@ -18,22 +16,22 @@ public class MovieDaoService {
         store.put(++sequence, new Movie(sequence, "green books", "My Third Movie", "comic"));
     }
 
+    @Override
     public Movie createMovie(Movie movie) {
-        movie.setId(++sequence);
+        if (movie.getId() == null) {
+            movie.setId(++sequence);
+        }
         store.put(movie.getId(), movie);
         return movie;
     }
 
+    @Override
     public Optional<Movie> findMovieById(int id) {
         return Optional.ofNullable(store.get(id));
     }
 
-    public List<RetrieveAllMoviesDTO> findAllMovie() {
-        List<RetrieveAllMoviesDTO> dtos = store
-                .values()
-                .stream()
-                .map(RetrieveAllMoviesDTO::fromEntity)
-                .collect(Collectors.toList());
-        return dtos;
+    @Override
+    public List<Movie> findAllMovies() {
+        return new ArrayList<>(store.values());
     }
 }
