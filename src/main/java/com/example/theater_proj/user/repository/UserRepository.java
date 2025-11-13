@@ -1,6 +1,6 @@
-package com.example.theater_proj.repository;
+package com.example.theater_proj.user.repository;
 
-import com.example.theater_proj.entity.User;
+import com.example.theater_proj.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

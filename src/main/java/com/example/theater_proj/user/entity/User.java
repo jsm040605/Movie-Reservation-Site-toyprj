@@ -1,5 +1,6 @@
-package com.example.theater_proj.entity;
+package com.example.theater_proj.user.entity;
 
+import com.example.theater_proj.user.model.UserGrade;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -23,7 +24,15 @@ public class User {
     private String password;
     private String name;
     private String phoneNumber;
-    private String userGrade;
+    private UserGrade userGrade;
+
+    public User(String email, String password, String name, String phoneNumber) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.userGrade = UserGrade.BRONZE;
+    }
 
     // todo : Reservation 클래스와 1:N 관계로 묶어야함
 }

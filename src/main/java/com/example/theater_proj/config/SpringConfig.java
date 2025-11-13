@@ -1,4 +1,4 @@
-package com.example.theater_proj;
+package com.example.theater_proj.config;
 
 import com.example.theater_proj.movie.repository.JpaMovieRepository;
 import com.example.theater_proj.movie.repository.JpaTheaterRepository;
