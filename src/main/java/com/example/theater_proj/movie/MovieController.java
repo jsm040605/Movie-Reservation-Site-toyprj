@@ -1,14 +1,19 @@
 package com.example.theater_proj.movie;
 
 import com.example.theater_proj.movie.dto.RetrieveAllMoviesDTO;
+import com.example.theater_proj.movie.dto.RoomScreeningDTO;
 import com.example.theater_proj.movie.entity.Movie;
+import com.example.theater_proj.movie.entity.Screening;
 import com.example.theater_proj.movie.entity.Theater;
 import com.example.theater_proj.movie.service.MovieService;
 import com.example.theater_proj.movie.service.ProvinceService;
+import com.example.theater_proj.movie.service.ScreeningService;
 import com.example.theater_proj.movie.service.TheaterService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -17,11 +22,18 @@ public class MovieController {
     MovieService movieService;
     TheaterService theaterService;
     ProvinceService provinceService;
+    ScreeningService screeningService;
 
-    public MovieController(MovieService movieService, TheaterService theaterService, ProvinceService provinceService) {
+    public MovieController(
+            MovieService movieService,
+            TheaterService theaterService,
+            ProvinceService provinceService,
+            ScreeningService screeningService
+    ) {
         this.movieService = movieService;
         this.theaterService = theaterService;
         this.provinceService = provinceService;
+        this.screeningService = screeningService;
     }
 
     //영화관 목록 조회
@@ -47,5 +59,17 @@ public class MovieController {
     @GetMapping("/theaters")
     public List<Theater> retreiveTheatersByProvince(@RequestParam("province") List<String> provinces){
         return theaterService.findTheatersByProvinces(provinces);
+    }
+    
+    //상영 조회
+    @GetMapping("/screenings")
+    public List<RoomScreeningDTO> retrieveScreeningsByCriteria(
+            @RequestParam("movie_id") int movie_id,
+            @RequestParam("theater_id") int theater_id,
+            @RequestParam("date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate date
+    ){
+        return screeningService.findScreeningsByMovieTheaterDate(movie_id, theater_id, date);
     }
 }

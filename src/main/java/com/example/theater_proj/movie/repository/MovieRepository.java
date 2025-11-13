@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MovieRepository {
-    public Movie createMovie(Movie movie);
-
     public Optional<Movie> findMovieById(int id);
 
-    public List<Movie> findAllMovies();
+    public List<Movie> findAll();
 }

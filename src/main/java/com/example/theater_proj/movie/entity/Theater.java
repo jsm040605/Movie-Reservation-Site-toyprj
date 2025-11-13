@@ -1,16 +1,36 @@
 package com.example.theater_proj.movie.entity;
 
 import com.example.theater_proj.movie.Province;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Theater {
+    @Id
+    @GeneratedValue
     private Integer id;
     private String name;
     private String address;
+
+    @Enumerated(EnumType.STRING)
     private Province province;
+
+    public Theater(Integer id, String name, String address, Province province) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.province = province;
+    }
+
+    @OneToMany(mappedBy = "theater", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Room> rooms;
 }

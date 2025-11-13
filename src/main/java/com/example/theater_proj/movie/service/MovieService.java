@@ -18,10 +18,6 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public Movie createMovie(Movie movie){
-        return movieRepository.createMovie(movie);
-    }
-
     public Movie findMovieById(int id){
         Optional<Movie> movie = movieRepository.findMovieById(id);
 
@@ -32,7 +28,7 @@ public class MovieService {
     }
 
     public List<RetrieveAllMoviesDTO> findAllMovies(){
-        List<Movie> movies = movieRepository.findAllMovies();
+        List<Movie> movies = movieRepository.findAll();
 
         return movies.stream().map(RetrieveAllMoviesDTO::fromEntity).collect(Collectors.toList());
     }
