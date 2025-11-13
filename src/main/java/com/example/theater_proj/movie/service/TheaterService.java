@@ -10,14 +10,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class TheaterService {
-    private TheaterRepository theaterRepository;
+    private final TheaterRepository theaterRepository;
 
     public TheaterService(TheaterRepository theaterRepository) {
         this.theaterRepository = theaterRepository;
-    }
-
-    public Theater createTheater(Theater theater) {
-        return theaterRepository.createTheater(theater);
     }
 
     public List<Theater> findTheatersByProvinces(List<String> provinces){
@@ -25,7 +21,8 @@ public class TheaterService {
             return Collections.emptyList();
         }
 
-        List<Theater> theaters = theaterRepository.findAllTheaters();
+        //이런 데이터 필터링은 최대한 DB가 하게 하는 게 옳다.
+        List<Theater> theaters = theaterRepository.findAll();
 
         return theaters.stream().filter(
                 theater -> theater.getProvince() != null &&
