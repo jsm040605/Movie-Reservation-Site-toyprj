@@ -2,6 +2,7 @@ package com.example.theater_proj.movie;
 
 import com.example.theater_proj.movie.dto.RetrieveAllMoviesDTO;
 import com.example.theater_proj.movie.dto.RoomScreeningDTO;
+import com.example.theater_proj.movie.dto.SeatsDTO;
 import com.example.theater_proj.movie.entity.Movie;
 import com.example.theater_proj.movie.entity.Screening;
 import com.example.theater_proj.movie.entity.Theater;
@@ -72,4 +73,13 @@ public class MovieController {
     ){
         return screeningService.findScreeningsByMovieTheaterDate(movie_id, theater_id, date);
     }
+    
+    //특정 상영 조회
+    @GetMapping("/screenings/{id}")
+    public SeatsDTO[][] retrieveRoomByScreening(@PathVariable int id){
+        return screeningService.getSeatMap(id);
+    }
+
+    //예약 생성
+    //예약은 어떤 영화, 영화관, 관, 상영, 좌석 모든 정보를 다 가지고 있어야 하는 거 아닌가?
 }

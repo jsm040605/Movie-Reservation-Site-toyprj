@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Data
@@ -28,4 +29,15 @@ public class Screening {
     @JoinColumn(name = "room_id")
     @JsonIgnore
     private Room room;
+
+    public Screening(Integer id, LocalDateTime screeningTime, Movie movie, Room room) {
+        this.id = id;
+        this.screeningTime = screeningTime;
+        this.movie = movie;
+        this.room = room;
+    }
+
+    @OneToMany(mappedBy = "screening", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Reservation> reservations;
 }

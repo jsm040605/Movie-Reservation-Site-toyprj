@@ -42,5 +42,9 @@ public class Room {
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @JsonIgnore
+    private List<Seat> seats;
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Screening> screeningList;
 }

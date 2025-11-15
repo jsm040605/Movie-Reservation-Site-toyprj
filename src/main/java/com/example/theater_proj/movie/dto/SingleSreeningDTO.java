@@ -11,4 +11,5 @@ import java.time.LocalDateTime;
 public class SingleSreeningDTO {
     private int id;
     private LocalDateTime startTime;
+    private long reservableSeatsCount;
 }
