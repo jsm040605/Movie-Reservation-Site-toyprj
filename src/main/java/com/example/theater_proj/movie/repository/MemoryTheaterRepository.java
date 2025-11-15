@@ -19,6 +19,11 @@ public class MemoryTheaterRepository implements TheaterRepository{
     }
 
     @Override
+    public <S extends Theater> List<S> saveAll(Iterable<S> theaters) {
+        return List.of();
+    }
+
+    @Override
     public List<Theater> findAll() {
         return new ArrayList<>(store.values());
     }

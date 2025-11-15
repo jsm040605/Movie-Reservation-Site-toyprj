@@ -18,6 +18,11 @@ public class MemoryMovieRepository implements MovieRepository {
 
 
     @Override
+    public <S extends Movie> List<S> saveAll(Iterable<S> entities) {
+        return List.of();
+    }
+
+    @Override
     public Optional<Movie> findMovieById(int id) {
         return Optional.ofNullable(store.get(id));
     }
@@ -26,4 +31,5 @@ public class MemoryMovieRepository implements MovieRepository {
     public List<Movie> findAll() {
         return new ArrayList<>(store.values());
     }
+
 }
