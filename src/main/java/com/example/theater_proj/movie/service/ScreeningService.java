@@ -1,6 +1,8 @@
 package com.example.theater_proj.movie.service;
 
+import com.example.theater_proj.movie.RoomGrade;
 import com.example.theater_proj.movie.SeatsBookingStatus;
+import com.example.theater_proj.movie.dto.RetrieveScreeningDTO;
 import com.example.theater_proj.movie.dto.RoomScreeningDTO;
 import com.example.theater_proj.movie.dto.SeatsDTO;
 import com.example.theater_proj.movie.dto.SingleSreeningDTO;
@@ -59,7 +61,7 @@ public class ScreeningService {
     }
 
 
-    public SeatsDTO[][] getSeatMap (int screening_id){
+    public RetrieveScreeningDTO getSeatMap (int screening_id){
         Screening screening = screeningRepository.findScreeningById(screening_id).get();
         List<Reservation> reservations = reservationRepository.findAllByScreeningId(screening_id);
 
@@ -85,6 +87,14 @@ public class ScreeningService {
             seatMap[seat.getCol()][seat.getRow()] = new SeatsDTO(seat.getId(), seat.getRow(), seat.getCol(), seatsBookingStatus);
         }
 
-        return seatMap;
+        RetrieveScreeningDTO retrieveScreeningDTO = new RetrieveScreeningDTO(
+                screening.getMovie().getId(),
+                room.getRoomGrade(),
+                room.getPrice(),
+                seatMap
+        );
+
+
+        return retrieveScreeningDTO;
     }
 }

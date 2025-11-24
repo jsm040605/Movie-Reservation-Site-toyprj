@@ -14,3 +14,5 @@ spring:
       settings:
         web-allow-others: true
       enabled: true
+server:
+  port: 8088

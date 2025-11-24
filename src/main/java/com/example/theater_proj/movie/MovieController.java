@@ -1,6 +1,7 @@
 package com.example.theater_proj.movie;
 
 import com.example.theater_proj.movie.dto.RetrieveAllMoviesDTO;
+import com.example.theater_proj.movie.dto.RetrieveScreeningDTO;
 import com.example.theater_proj.movie.dto.RoomScreeningDTO;
 import com.example.theater_proj.movie.dto.SeatsDTO;
 import com.example.theater_proj.movie.entity.Movie;
@@ -76,7 +77,7 @@ public class MovieController {
     
     //특정 상영 조회
     @GetMapping("/screenings/{id}")
-    public SeatsDTO[][] retrieveRoomByScreening(@PathVariable int id){
+    public RetrieveScreeningDTO retrieveRoomByScreening(@PathVariable int id){
         return screeningService.getSeatMap(id);
     }
 
