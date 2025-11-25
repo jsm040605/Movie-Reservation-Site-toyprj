@@ -1,6 +1,6 @@
 package com.example.theater_proj.movie.service;
 
-import com.example.theater_proj.movie.dto.RetrieveAllMoviesDTO;
+import com.example.theater_proj.movie.dto.response.RetrieveAllMoviesDTO;
 import com.example.theater_proj.movie.entity.Movie;
 import com.example.theater_proj.movie.exception.MovieNotFoundException;
 import com.example.theater_proj.movie.repository.MovieRepository;

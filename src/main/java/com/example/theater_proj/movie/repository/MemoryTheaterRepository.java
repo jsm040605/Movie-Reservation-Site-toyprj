@@ -24,8 +24,9 @@ public class MemoryTheaterRepository implements TheaterRepository{
     }
 
     @Override
-    public List<Theater> findAll() {
-        return new ArrayList<>(store.values());
+    public List<Theater> findByProvinceIn(List<Province> provinces) {
+        return List.of();
     }
+
 
 }

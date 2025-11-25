@@ -1,5 +1,6 @@
 package com.example.theater_proj.movie.service;
 
+import com.example.theater_proj.movie.Province;
 import com.example.theater_proj.movie.entity.Theater;
 import com.example.theater_proj.movie.repository.TheaterRepository;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,16 @@ public class TheaterService {
         this.theaterRepository = theaterRepository;
     }
 
-    public List<Theater> findTheatersByProvinces(List<String> provinces){
-        if (provinces == null || provinces.isEmpty()){
+    public List<Theater> findTheatersByProvinces(List<String> provinceNames){
+        if (provinceNames == null || provinceNames.isEmpty()){
             return Collections.emptyList();
         }
 
-        //이런 데이터 필터링은 최대한 DB가 하게 하는 게 옳다.
-        List<Theater> theaters = theaterRepository.findAll();
+        List<Province> provinces = provinceNames.stream()
+                .map(Province::fromFullName)
+                .collect(Collectors.toList());
 
-        return theaters.stream().filter(
-                theater -> theater.getProvince() != null &&
-                        provinces.contains(theater.getProvince().getFullName())
-        ).collect(Collectors.toList());
+        //이런 데이터 필터링은 최대한 DB가 하게 하는 게 옳다.
+        return theaterRepository.findByProvinceIn(provinces);
     }
 }

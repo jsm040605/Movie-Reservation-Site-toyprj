@@ -1,11 +1,10 @@
 package com.example.theater_proj.movie.service;
 
-import com.example.theater_proj.movie.RoomGrade;
 import com.example.theater_proj.movie.SeatsBookingStatus;
-import com.example.theater_proj.movie.dto.RetrieveScreeningDTO;
-import com.example.theater_proj.movie.dto.RoomScreeningDTO;
-import com.example.theater_proj.movie.dto.SeatsDTO;
-import com.example.theater_proj.movie.dto.SingleSreeningDTO;
+import com.example.theater_proj.movie.dto.response.RetrieveScreeningDTO;
+import com.example.theater_proj.movie.dto.response.RoomScreeningDTO;
+import com.example.theater_proj.movie.dto.response.SeatsDTO;
+import com.example.theater_proj.movie.dto.response.SingleSreeningDTO;
 import com.example.theater_proj.movie.entity.*;
 import com.example.theater_proj.movie.repository.*;
 import org.springframework.stereotype.Service;
@@ -18,17 +17,11 @@ import java.util.stream.Collectors;
 @Service
 public class ScreeningService {
     private ScreeningRepository screeningRepository;
-    private ReservationRepository reservationRepository;
-    private SeatRepository seatRepository;
 
     public ScreeningService(
-            ScreeningRepository screeningRepository,
-            ReservationRepository reservationRepository,
-            SeatRepository seatRepository
+            ScreeningRepository screeningRepository
     ) {
         this.screeningRepository = screeningRepository;
-        this.reservationRepository = reservationRepository;
-        this.seatRepository = seatRepository;
     }
 
     //movie, theater, date로 필터링 한 뒤 상영 정보 보여주기
@@ -51,11 +44,11 @@ public class ScreeningService {
                                     (long) singleRoom.getColCount() *singleRoom.getColCount() -
                                             screening.getReservations().stream().count()
                             )
-                    ).sorted(Comparator.comparing(SingleSreeningDTO::getStartTime)).toList();
+                    ).sorted(Comparator.comparing(SingleSreeningDTO::startTime)).toList();
 
                     return new RoomScreeningDTO(singleRoom.getRoomNumber(), singleRoom.getRoomGrade(), singleScreenigs);
                 }
-        ).sorted(Comparator.comparing(RoomScreeningDTO::getRoomNumber)).toList();
+        ).sorted(Comparator.comparing(RoomScreeningDTO::roomNumber)).toList();
 
         return showRoomScreening;
     }
@@ -63,10 +56,11 @@ public class ScreeningService {
 
     public RetrieveScreeningDTO getSeatMap (int screening_id){
         Screening screening = screeningRepository.findScreeningById(screening_id).get();
-        List<Reservation> reservations = reservationRepository.findAllByScreeningId(screening_id);
+        List<Reservation> reservations = screening.getReservations();
 
         Room room = screening.getRoom();
-        List<Seat> allSeats = seatRepository.findAllByRoomId(room.getId());
+        List<Seat> allSeats = room.getSeats();
+
         Set<Integer> reservedSeats = new HashSet<>();
 
         for (Reservation reservation : reservations) {
