@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface JpaScreeningRepository extends JpaRepository<Screening, Integer>, ScreeningRepository {
     @Override
@@ -25,4 +26,5 @@ public interface JpaScreeningRepository extends JpaRepository<Screening, Integer
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
     );
+
 }

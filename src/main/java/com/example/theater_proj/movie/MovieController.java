@@ -1,11 +1,9 @@
 package com.example.theater_proj.movie;
 
-import com.example.theater_proj.movie.dto.RetrieveAllMoviesDTO;
-import com.example.theater_proj.movie.dto.RetrieveScreeningDTO;
-import com.example.theater_proj.movie.dto.RoomScreeningDTO;
-import com.example.theater_proj.movie.dto.SeatsDTO;
+import com.example.theater_proj.movie.dto.response.RetrieveAllMoviesDTO;
+import com.example.theater_proj.movie.dto.response.RetrieveScreeningDTO;
+import com.example.theater_proj.movie.dto.response.RoomScreeningDTO;
 import com.example.theater_proj.movie.entity.Movie;
-import com.example.theater_proj.movie.entity.Screening;
 import com.example.theater_proj.movie.entity.Theater;
 import com.example.theater_proj.movie.service.MovieService;
 import com.example.theater_proj.movie.service.ProvinceService;
