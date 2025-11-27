@@ -1,11 +1,11 @@
 package com.example.theater_proj.movie.repository;
 
 import com.example.theater_proj.movie.entity.Movie;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Repository
 public class MemoryMovieRepository implements MovieRepository {
     private static Map<Integer, Movie> store = new HashMap<>();
     private static Integer sequence = 0;
@@ -16,13 +16,10 @@ public class MemoryMovieRepository implements MovieRepository {
         store.put(++sequence, new Movie(sequence, "green books", "My Third Movie", "comic"));
     }
 
+
     @Override
-    public Movie createMovie(Movie movie) {
-        if (movie.getId() == null) {
-            movie.setId(++sequence);
-        }
-        store.put(movie.getId(), movie);
-        return movie;
+    public <S extends Movie> List<S> saveAll(Iterable<S> entities) {
+        return List.of();
     }
 
     @Override
@@ -31,7 +28,8 @@ public class MemoryMovieRepository implements MovieRepository {
     }
 
     @Override
-    public List<Movie> findAllMovies() {
+    public List<Movie> findAll() {
         return new ArrayList<>(store.values());
     }
+
 }

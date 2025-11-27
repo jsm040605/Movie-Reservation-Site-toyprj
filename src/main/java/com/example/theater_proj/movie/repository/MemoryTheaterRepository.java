@@ -2,15 +2,12 @@ package com.example.theater_proj.movie.repository;
 
 import com.example.theater_proj.movie.Province;
 import com.example.theater_proj.movie.entity.Theater;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
 public class MemoryTheaterRepository implements TheaterRepository{
     private static Map<Integer, Theater> store = new HashMap<>();
     private static Integer sequence = 0;
@@ -22,16 +19,14 @@ public class MemoryTheaterRepository implements TheaterRepository{
     }
 
     @Override
-    public Theater createTheater(Theater theater) {
-        if (theater.getId() == null) {
-            theater.setId(++sequence);
-        }
-        store.put(theater.getId(), theater);
-        return theater;
+    public <S extends Theater> List<S> saveAll(Iterable<S> theaters) {
+        return List.of();
     }
 
     @Override
-    public List<Theater> findAllTheaters() {
-        return new ArrayList<>(store.values());
+    public List<Theater> findByProvinceIn(List<Province> provinces) {
+        return List.of();
     }
+
+
 }
