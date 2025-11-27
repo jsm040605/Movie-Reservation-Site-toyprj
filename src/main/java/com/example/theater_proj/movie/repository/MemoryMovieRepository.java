@@ -11,9 +11,9 @@ public class MemoryMovieRepository implements MovieRepository {
     private static Integer sequence = 0;
 
     static {
-        store.put(++sequence, new Movie(sequence, "abata", "My first Movie", "action"));
-        store.put(++sequence, new Movie(sequence, "demon hunters", "My Second Movie", "animation"));
-        store.put(++sequence, new Movie(sequence, "green books", "My Third Movie", "comic"));
+        store.put(++sequence, new Movie(sequence, "abata", "My first Movie", "action", 120));
+        store.put(++sequence, new Movie(sequence, "demon hunters", "My Second Movie", "animation", 150));
+        store.put(++sequence, new Movie(sequence, "green books", "My Third Movie", "comic", 150));
     }
 
 

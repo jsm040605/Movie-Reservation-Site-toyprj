@@ -1,5 +1,6 @@
 package com.example.theater_proj.movie.entity;
 
+import com.example.theater_proj.movie.SeatsBookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,15 +18,13 @@ public class Reservation {
     @GeneratedValue
     private int id;
 
+    @Enumerated(EnumType.STRING)
+    private SeatsBookingStatus bookingStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "screening_id")
     private Screening screening;
-
-    public Reservation(int id, Screening screening) {
-        this.id = id;
-        this.screening = screening;
-    }
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnore
