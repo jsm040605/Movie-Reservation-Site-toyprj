@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record SingleSreeningDTO(
         int id,
         LocalDateTime startTime,
+        LocalDateTime endTime,
         long reservableSeatsCount
 ) {
 

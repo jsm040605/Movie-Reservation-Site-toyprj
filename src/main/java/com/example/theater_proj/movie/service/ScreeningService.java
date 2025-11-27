@@ -41,6 +41,7 @@ public class ScreeningService {
                             screening -> new SingleSreeningDTO(
                                     screening.getId(),
                                     screening.getScreeningTime(),
+                                    screening.getScreeningTime().plusMinutes((long) screening.getMovie().getRunningTime()),
                                     (long) singleRoom.getColCount() *singleRoom.getColCount() -
                                             screening.getReservations().stream().count()
                             )
@@ -61,11 +62,11 @@ public class ScreeningService {
         Room room = screening.getRoom();
         List<Seat> allSeats = room.getSeats();
 
-        Set<Integer> reservedSeats = new HashSet<>();
+        Map<Integer, SeatsBookingStatus> reservedSeats = new HashMap<>();
 
         for (Reservation reservation : reservations) {
             for (Seat seat : reservation.getSeats()) {
-                reservedSeats.add(seat.getId());
+                reservedSeats.put(seat.getId(), reservation.getBookingStatus());
             }
         }
 
@@ -75,14 +76,13 @@ public class ScreeningService {
         SeatsDTO[][] seatMap = new SeatsDTO[colCount][rowCount];
 
         for (Seat seat : allSeats) {
-            SeatsBookingStatus seatsBookingStatus = reservedSeats.contains(seat.getId())
-                    ? SeatsBookingStatus.RESERVED : SeatsBookingStatus.AVAILABLE;
+            SeatsBookingStatus seatsBookingStatus = reservedSeats.getOrDefault(seat.getId(), SeatsBookingStatus.AVAILABLE);
 
             seatMap[seat.getCol()][seat.getRow()] = new SeatsDTO(seat.getId(), seat.getRow(), seat.getCol(), seatsBookingStatus);
         }
 
         RetrieveScreeningDTO retrieveScreeningDTO = new RetrieveScreeningDTO(
-                screening.getMovie().getId(),
+                screening.getId(),
                 room.getRoomGrade(),
                 room.getPrice(),
                 seatMap

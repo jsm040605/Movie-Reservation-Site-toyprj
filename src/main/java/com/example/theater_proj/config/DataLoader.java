@@ -21,13 +21,13 @@ public class DataLoader implements CommandLineRunner {
     private TheaterRepository theaterRepository;
     private ScreeningRepository screeningRepository;
     private RoomRepository roomRepository;
-    private SeatRepository seatRepository;
+    private JpaSeatRepository seatRepository;
 
     @Override
     public void run(String... args) throws Exception {
-        Movie m1 = new Movie(null, "ababta", "My First Movie", "action");
-        Movie m2 = new Movie(null, "demon hunters", "My Second Movie", "animation");
-        Movie m3 = new Movie(null, "green books", "My Third Movie", "comic");
+        Movie m1 = new Movie(null, "ababta", "My First Movie", "action", 120);
+        Movie m2 = new Movie(null, "demon hunters", "My Second Movie", "animation", 150);
+        Movie m3 = new Movie(null, "green books", "My Third Movie", "comic", 150);
 
         //초기 데이터 생성 로직을 추가해야 함!
         List<Movie> movies = movieRepository.saveAll(Arrays.asList(m1, m2, m3));

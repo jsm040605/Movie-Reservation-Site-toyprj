@@ -20,11 +20,14 @@ public class Movie {
     private String description;
     private String genre;
 
-    public Movie(Integer id, String title, String description, String genre) {
+    private Integer runningTime;
+
+    public Movie(Integer id, String title, String description, String genre, Integer runningTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.genre = genre;
+        this.runningTime = runningTime;
     }
 
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)

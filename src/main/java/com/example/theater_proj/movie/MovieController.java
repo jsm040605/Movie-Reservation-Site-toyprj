@@ -1,14 +1,14 @@
 package com.example.theater_proj.movie;
 
+import com.example.theater_proj.movie.dto.request.ReservationRequest;
+import com.example.theater_proj.movie.dto.response.ReservationResponse;
 import com.example.theater_proj.movie.dto.response.RetrieveAllMoviesDTO;
 import com.example.theater_proj.movie.dto.response.RetrieveScreeningDTO;
 import com.example.theater_proj.movie.dto.response.RoomScreeningDTO;
 import com.example.theater_proj.movie.entity.Movie;
+import com.example.theater_proj.movie.entity.Reservation;
 import com.example.theater_proj.movie.entity.Theater;
-import com.example.theater_proj.movie.service.MovieService;
-import com.example.theater_proj.movie.service.ProvinceService;
-import com.example.theater_proj.movie.service.ScreeningService;
-import com.example.theater_proj.movie.service.TheaterService;
+import com.example.theater_proj.movie.service.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +23,20 @@ public class MovieController {
     TheaterService theaterService;
     ProvinceService provinceService;
     ScreeningService screeningService;
+    ReservationService reservationService;
 
     public MovieController(
             MovieService movieService,
             TheaterService theaterService,
             ProvinceService provinceService,
-            ScreeningService screeningService
+            ScreeningService screeningService,
+            ReservationService reservationService
     ) {
         this.movieService = movieService;
         this.theaterService = theaterService;
         this.provinceService = provinceService;
         this.screeningService = screeningService;
+        this.reservationService = reservationService;
     }
 
     //영화관 목록 조회
@@ -81,4 +84,8 @@ public class MovieController {
 
     //예약 생성
     //예약은 어떤 영화, 영화관, 관, 상영, 좌석 모든 정보를 다 가지고 있어야 하는 거 아닌가?
+    @PostMapping("/reservations")
+    public ReservationResponse makeReservation(@RequestBody ReservationRequest request){
+        return reservationService.makeReservations(request.screeningId(), request.seatsIds(), request.price());
+    }
 }
