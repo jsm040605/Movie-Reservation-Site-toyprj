@@ -9,7 +9,7 @@ public record SingleSreeningDTO(
         int id,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        long reservableSeatsCount
+        int reservableSeatsCount
 ) {
 
 }
