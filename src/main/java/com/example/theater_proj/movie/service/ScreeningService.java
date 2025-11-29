@@ -37,16 +37,11 @@ public class ScreeningService {
         List<RoomScreeningDTO> showRoomScreening = ScreeningGroup.entrySet().stream().map(
                 entry -> {
                     Room singleRoom = entry.getKey();
-                    List<SingleSreeningDTO> singleScreenigs = entry.getValue().stream().map(
-                            screening -> new SingleSreeningDTO(
-                                    screening.getId(),
-                                    screening.getScreeningTime(),
-                                    screening.getScreeningTime().plusMinutes((long) screening.getMovie().getRunningTime()),
-                                    (long) singleRoom.getColCount() *singleRoom.getColCount() -
-                                            screening.getReservations().stream().count()
-                            )
-                    ).sorted(Comparator.comparing(SingleSreeningDTO::startTime)).toList();
-
+                    List<SingleSreeningDTO> singleScreenigs = entry
+                            .getValue()
+                            .stream()
+                            .map(this::screeningConvertDTO)
+                            .sorted(Comparator.comparing(SingleSreeningDTO::startTime)).toList();
                     return new RoomScreeningDTO(singleRoom.getRoomNumber(), singleRoom.getRoomGrade(), singleScreenigs);
                 }
         ).sorted(Comparator.comparing(RoomScreeningDTO::roomNumber)).toList();
@@ -90,5 +85,22 @@ public class ScreeningService {
 
 
         return retrieveScreeningDTO;
+    }
+    
+    private SingleSreeningDTO screeningConvertDTO(Screening screening){
+        long runningTime = screening.getMovie().getRunningTime();
+        LocalDateTime endTime = screening.getScreeningTime().plusMinutes(runningTime);
+
+        Room room = screening.getRoom();
+        int totalSeats = room.getRowCount() * room.getColCount();
+        int reservedSeats = screening.getReservations().size();
+        int remainSeats = totalSeats - reservedSeats;
+
+        return new SingleSreeningDTO(
+                screening.getId(),
+                screening.getScreeningTime(),
+                endTime,
+                remainSeats
+        );
     }
 }
