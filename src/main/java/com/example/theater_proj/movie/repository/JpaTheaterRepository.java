@@ -1,7 +1,11 @@
 package com.example.theater_proj.movie.repository;
 
+import com.example.theater_proj.movie.Province;
 import com.example.theater_proj.movie.entity.Theater;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaTheaterRepository extends JpaRepository<Theater, Integer>, TheaterRepository {
+import java.util.List;
+
+public interface JpaTheaterRepository extends JpaRepository<Theater, Integer> {
+    List<Theater> findByProvinceIn(List<Province> provinces);
 }

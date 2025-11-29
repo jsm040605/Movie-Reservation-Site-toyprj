@@ -10,6 +10,7 @@ import com.example.theater_proj.movie.entity.Reservation;
 import com.example.theater_proj.movie.entity.Theater;
 import com.example.theater_proj.movie.service.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -85,7 +86,9 @@ public class MovieController {
     //예약 생성
     //예약은 어떤 영화, 영화관, 관, 상영, 좌석 모든 정보를 다 가지고 있어야 하는 거 아닌가?
     @PostMapping("/reservations")
-    public ReservationResponse makeReservation(@RequestBody ReservationRequest request){
-        return reservationService.makeReservations(request.screeningId(), request.seatsIds(), request.price());
+    public ResponseEntity<ReservationResponse> makeReservation(@RequestBody ReservationRequest request){
+        ReservationResponse reservationResponse = reservationService.makeReservations(request.screeningId(), request.seatsIds(), request.price());
+
+        return new ResponseEntity<>(reservationResponse, HttpStatus.CREATED);
     }
 }

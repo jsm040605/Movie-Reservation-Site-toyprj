@@ -17,10 +17,10 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class DataLoader implements CommandLineRunner {
-    private MovieRepository movieRepository;
-    private TheaterRepository theaterRepository;
-    private ScreeningRepository screeningRepository;
-    private RoomRepository roomRepository;
+    private JpaMovieRepository movieRepository;
+    private JpaTheaterRepository theaterRepository;
+    private JpaScreeningRepository screeningRepository;
+    private JpaRoomRepository roomRepository;
     private JpaSeatRepository seatRepository;
 
     @Override

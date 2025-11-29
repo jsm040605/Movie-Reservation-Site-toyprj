@@ -10,15 +10,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaScreeningRepository extends JpaRepository<Screening, Integer>, ScreeningRepository {
-    @Override
+public interface JpaScreeningRepository extends JpaRepository<Screening, Integer> {
     @Query(
             "select s from Screening s "
             + "join fetch s.room r "
             + "join r.theater t "
             + "where s.movie.id = :movieId "
             + "and t.id = :theaterId "
-            + "and s.screeningTime between :startOfDay and :endOfDay"
+            + "and s.startTime between :startOfDay and :endOfDay"
     )
     List<Screening> findScreeningsByCriteria(
             @Param("movieId") int movieId,
@@ -27,4 +26,5 @@ public interface JpaScreeningRepository extends JpaRepository<Screening, Integer
             @Param("endOfDay") LocalDateTime endOfDay
     );
 
+    ClassValue<Object> findScreeningById(Integer id);
 }
