@@ -18,7 +18,8 @@ public class Screening {
     @Id
     @GeneratedValue
     private Integer id;
-    private LocalDateTime screeningTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
@@ -30,11 +31,16 @@ public class Screening {
     @JsonIgnore
     private Room room;
 
-    public Screening(Integer id, LocalDateTime screeningTime, Movie movie, Room room) {
+    public Screening(Integer id, LocalDateTime startTime, Movie movie, Room room) {
         this.id = id;
-        this.screeningTime = screeningTime;
+        this.startTime = startTime;
+        this.endTime = calculateEndTime(startTime, movie.getRunningTime());
         this.movie = movie;
         this.room = room;
+    }
+
+    private LocalDateTime calculateEndTime(LocalDateTime startTime, Integer EndTime){
+        return startTime.plusMinutes((long) EndTime);
     }
 
     @OneToMany(mappedBy = "screening", fetch = FetchType.LAZY)

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface JpaReservationRepository extends JpaRepository<Reservation, Integer>, ReservationRepository{
+public interface JpaReservationRepository extends JpaRepository<Reservation, Integer>{
 }

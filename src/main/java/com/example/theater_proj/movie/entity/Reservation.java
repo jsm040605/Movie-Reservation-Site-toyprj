@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,12 +22,19 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private SeatsBookingStatus bookingStatus;
 
+    private int totalPrice;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "screening_id")
     private Screening screening;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Seat> seats;
+    private List<ReservationDetail> reservationDetails = new ArrayList<>();
+
+    public void addReservationDetail(ReservationDetail reservationDetail) {
+        this.reservationDetails.add(reservationDetail);
+        reservationDetail.setReservation(this);
+    }
 }
