@@ -3,17 +3,20 @@ package com.example.theater_proj.movie.service;
 import com.example.theater_proj.movie.SeatsBookingStatus;
 import com.example.theater_proj.movie.dto.response.*;
 import com.example.theater_proj.movie.entity.*;
+import com.example.theater_proj.movie.exception.AlreadyReservedException;
 import com.example.theater_proj.movie.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReservationService {
-    JpaReservationRepository reservationRepository;
-    JpaScreeningRepository screeningRepository;
-    JpaSeatRepository seatRepository;
+    private final JpaReservationRepository reservationRepository;
+    private final JpaScreeningRepository screeningRepository;
+    private final JpaSeatRepository seatRepository;
 
     public ReservationService(
             JpaReservationRepository reservationRepository,
@@ -28,6 +31,16 @@ public class ReservationService {
     public ReservationResponse makeReservations(int screeningId, List<Integer> seatsIds, int price){
         Screening screening = screeningRepository.findById(screeningId).get();
         List<Seat> seats = seatRepository.findAllById(seatsIds);
+
+        Map<Integer, SeatsBookingStatus> reservedSeats = findReservationSeatsBy(screening);
+
+        for (Seat seat : seats) {
+            SeatsBookingStatus status = reservedSeats.getOrDefault(seat.getId(), SeatsBookingStatus.AVAILABLE);
+
+            if (!status.equals(SeatsBookingStatus.AVAILABLE)) {
+                throw new AlreadyReservedException("id: "+ seat.getId()+ " is already reserved");
+            }
+        }
 
         Reservation reservation = new Reservation();
         reservation.setScreening(screening);
@@ -44,10 +57,26 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        return getReservationResponse(screening, seats, savedReservation);
+        return convertToReservationReseponseDTO(screening, seats, savedReservation);
     }
 
-    private ReservationResponse getReservationResponse(Screening screening, List<Seat> seats, Reservation reservation) {
+    public Map<Integer, SeatsBookingStatus> findReservationSeatsBy(Screening screening){
+        List<Reservation> reservations = screening.getReservations();
+
+        Map<Integer, SeatsBookingStatus> reservedSeats = new HashMap<>();
+
+        for (Reservation reservation : reservations) {
+            List<ReservationDetail> reservationDetails = reservation.getReservationDetails();
+            for (ReservationDetail reservationDetail : reservationDetails) {
+                Seat seat = reservationDetail.getSeat();
+                reservedSeats.put(seat.getId(), reservation.getBookingStatus());
+            }
+        }
+
+        return reservedSeats;
+    }
+
+    private ReservationResponse convertToReservationReseponseDTO(Screening screening, List<Seat> seats, Reservation reservation) {
         Movie movie = screening.getMovie();
         ReservedMovieDTO movieDTO = new ReservedMovieDTO(movie.getId(), movie.getTitle(), movie.getRunningTime());
         ReservedScreeningDTO screeningDTO = new ReservedScreeningDTO(screening.getStartTime(), screening.getEndTime());

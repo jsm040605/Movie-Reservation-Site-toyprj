@@ -26,7 +26,6 @@ public class TheaterService {
                 .map(Province::fromFullName)
                 .collect(Collectors.toList());
 
-        //이런 데이터 필터링은 최대한 DB가 하게 하는 게 옳다.
         return theaterRepository.findByProvinceIn(provinces);
     }
 }
