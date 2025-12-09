@@ -30,11 +30,11 @@ public class ReservationService {
 
     public ReservationResponse makeReservations(int screeningId, List<Integer> seatsIds, int price){
         Screening screening = screeningRepository.findById(screeningId).get();
-        List<Seat> seats = seatRepository.findAllById(seatsIds);
+        List<Seats> seats = seatRepository.findAllById(seatsIds);
 
         Map<Integer, SeatsBookingStatus> reservedSeats = findReservationSeatsBy(screening);
 
-        for (Seat seat : seats) {
+        for (Seats seat : seats) {
             SeatsBookingStatus status = reservedSeats.getOrDefault(seat.getId(), SeatsBookingStatus.AVAILABLE);
 
             if (!status.equals(SeatsBookingStatus.AVAILABLE)) {
@@ -49,7 +49,7 @@ public class ReservationService {
         int totalPrice = price * seats.size();
         reservation.setTotalPrice(totalPrice);
 
-        for (Seat seat : seats) {
+        for (Seats seat : seats) {
             ReservationDetail reservationDetail = new ReservationDetail(seat);
 
             reservation.addReservationDetail(reservationDetail);
@@ -68,7 +68,7 @@ public class ReservationService {
         for (Reservation reservation : reservations) {
             List<ReservationDetail> reservationDetails = reservation.getReservationDetails();
             for (ReservationDetail reservationDetail : reservationDetails) {
-                Seat seat = reservationDetail.getSeat();
+                Seats seat = reservationDetail.getSeat();
                 reservedSeats.put(seat.getId(), reservation.getBookingStatus());
             }
         }
@@ -76,7 +76,7 @@ public class ReservationService {
         return reservedSeats;
     }
 
-    private ReservationResponse convertToReservationReseponseDTO(Screening screening, List<Seat> seats, Reservation reservation) {
+    private ReservationResponse convertToReservationReseponseDTO(Screening screening, List<Seats> seats, Reservation reservation) {
         Movie movie = screening.getMovie();
         ReservedMovieDTO movieDTO = new ReservedMovieDTO(movie.getId(), movie.getTitle(), movie.getRunningTime());
         ReservedScreeningDTO screeningDTO = new ReservedScreeningDTO(screening.getStartTime(), screening.getEndTime());
@@ -85,7 +85,7 @@ public class ReservationService {
         ReservedRoomDTO roomDTO = new ReservedRoomDTO(room.getRoomNumber(), room.getRoomGrade());
 
         List<ReservedSeatsDTO> reservedSeatsDTOS = new ArrayList<>();
-        for (Seat seat : seats) {
+        for (Seats seat : seats) {
             ReservedSeatsDTO seatsDTO = new ReservedSeatsDTO(seat.getRow(), seat.getCol());
             reservedSeatsDTOS.add(seatsDTO);
         }

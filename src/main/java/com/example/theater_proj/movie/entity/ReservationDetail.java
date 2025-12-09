@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class ReservationDetail {
     @Id
     @GeneratedValue
+    @Column(name = "reservation_detail_id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,9 +24,9 @@ public class ReservationDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "seat_id")
-    private Seat seat;
+    private Seats seat;
 
-    public ReservationDetail(Seat seat) {
+    public ReservationDetail(Seats seat) {
         this.seat = seat;
     }
 }

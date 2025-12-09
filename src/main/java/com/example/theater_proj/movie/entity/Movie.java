@@ -15,6 +15,7 @@ import java.util.List;
 public class Movie {
     @Id
     @GeneratedValue
+    @Column(name = "movie_id")
     private Integer id;
     private String title;
     private String description;

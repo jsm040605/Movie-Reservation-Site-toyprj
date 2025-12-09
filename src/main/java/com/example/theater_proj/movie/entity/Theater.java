@@ -16,6 +16,7 @@ import java.util.List;
 public class Theater {
     @Id
     @GeneratedValue
+    @Column(name = "theater_id")
     private Integer id;
     private String name;
     private String address;

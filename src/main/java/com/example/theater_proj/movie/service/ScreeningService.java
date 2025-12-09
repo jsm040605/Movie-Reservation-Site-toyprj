@@ -48,14 +48,14 @@ public class ScreeningService {
 
         //SeatMap 만들어서 좌석 상태 표현
         Room room = screening.getRoom();
-        List<Seat> allSeats = room.getSeats();
+        List<Seats> allSeats = room.getSeats();
 
         int rowCount = room.getRowCount();
         int colCount = room.getColCount();
 
         SeatsDTO[][] seatMap = new SeatsDTO[colCount][rowCount];
 
-        for (Seat seat : allSeats) {
+        for (Seats seat : allSeats) {
             SeatsBookingStatus seatsBookingStatus = reservedSeats.getOrDefault(seat.getId(), SeatsBookingStatus.AVAILABLE);
 
             seatMap[seat.getCol()][seat.getRow()] = new SeatsDTO(seat.getId(), seat.getRow(), seat.getCol(), seatsBookingStatus);
@@ -64,7 +64,6 @@ public class ScreeningService {
         RetrieveScreeningDTO retrieveScreeningDTO = new RetrieveScreeningDTO(
                 screening.getId(),
                 room.getRoomGrade(),
-                room.getPrice(),
                 seatMap
         );
 

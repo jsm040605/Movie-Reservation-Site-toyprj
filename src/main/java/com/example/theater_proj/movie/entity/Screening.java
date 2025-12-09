@@ -17,6 +17,7 @@ import java.util.List;
 public class Screening {
     @Id
     @GeneratedValue
+    @Column(name = "screening_id")
     private Integer id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

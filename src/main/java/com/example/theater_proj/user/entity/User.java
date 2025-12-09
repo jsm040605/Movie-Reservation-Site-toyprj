@@ -1,5 +1,6 @@
 package com.example.theater_proj.user.entity;
 
+import com.example.theater_proj.global.model.Status;
 import com.example.theater_proj.user.model.UserGrade;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -26,13 +29,25 @@ public class User {
     private String phoneNumber;
     private UserGrade userGrade;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status")
+    private Status status;
+
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+
     public User(String email, String password, String name, String phoneNumber) {
+
         this.email = email;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.userGrade = UserGrade.BRONZE;
-    }
+        this.status = Status.ACTIVE;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
 
-    // todo : Reservation 클래스와 1:N 관계로 묶어야함
+    }
 }

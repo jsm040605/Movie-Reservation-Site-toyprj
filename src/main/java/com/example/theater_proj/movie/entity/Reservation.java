@@ -17,6 +17,7 @@ import java.util.List;
 public class Reservation {
     @Id
     @GeneratedValue
+    @Column(name = "reservation_id")
     private int id;
 
     @Enumerated(EnumType.STRING)

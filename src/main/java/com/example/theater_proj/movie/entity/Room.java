@@ -16,12 +16,12 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue
+    @Column(name = "room_id")
     private Integer id;
     private Integer roomNumber;
 
     @Enumerated(EnumType.STRING)
     private RoomGrade roomGrade;
-    private Integer price;
     private Integer rowCount;
     private Integer colCount;
 
@@ -30,11 +30,10 @@ public class Room {
     @JoinColumn(name = "theater_id")
     private Theater theater;
 
-    public Room(Integer id, Integer roomNumber, RoomGrade roomGrade, Integer price, Integer rowCount, Integer colCount, Theater theater) {
+    public Room(Integer id, Integer roomNumber, RoomGrade roomGrade, Integer rowCount, Integer colCount, Theater theater) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.roomGrade = roomGrade;
-        this.price = price;
         this.rowCount = rowCount;
         this.colCount = colCount;
         this.theater = theater;
@@ -42,7 +41,7 @@ public class Room {
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Seat> seats;
+    private List<Seats> seats;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @JsonIgnore
