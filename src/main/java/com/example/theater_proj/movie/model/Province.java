@@ -1,11 +1,9 @@
-package com.example.theater_proj.movie;
+package com.example.theater_proj.movie.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.sql.Array;
 import java.util.Arrays;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
