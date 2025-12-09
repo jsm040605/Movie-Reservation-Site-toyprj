@@ -1,6 +1,7 @@
 package com.example.theater_proj.movie.entity;
 
-import com.example.theater_proj.movie.SeatsBookingStatus;
+import com.example.theater_proj.movie.model.PaymentStatus;
+import com.example.theater_proj.movie.model.SeatsBookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,11 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private SeatsBookingStatus bookingStatus;
 
+    @Column(name = "total_amount")
     private int totalPrice;
+
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStauts;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
