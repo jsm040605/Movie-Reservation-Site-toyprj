@@ -19,7 +19,11 @@ public class Screening {
     @GeneratedValue
     @Column(name = "screening_id")
     private Integer id;
+
+    @Column(name = "start_time")
     private LocalDateTime startTime;
+
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,13 +39,17 @@ public class Screening {
     public Screening(Integer id, LocalDateTime startTime, Movie movie, Room room) {
         this.id = id;
         this.startTime = startTime;
-        this.endTime = calculateEndTime(startTime, movie.getRunningTime());
+//        this.endTime = calculateEndTime(startTime, movie.getRunningTime());
         this.movie = movie;
         this.room = room;
     }
 
-    private LocalDateTime calculateEndTime(LocalDateTime startTime, Integer EndTime){
-        return startTime.plusMinutes((long) EndTime);
+    @PrePersist
+    @PreUpdate
+    public void caculateEndTime(){
+        if (this.startTime != null && this.movie != null && this.room != null){
+            this.endTime = this.startTime.plusMinutes(movie.getRunningTime());
+        }
     }
 
     @OneToMany(mappedBy = "screening", fetch = FetchType.LAZY)

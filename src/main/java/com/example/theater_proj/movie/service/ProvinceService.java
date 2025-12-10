@@ -1,6 +1,6 @@
 package com.example.theater_proj.movie.service;
 
-import com.example.theater_proj.movie.Province;
+import com.example.theater_proj.movie.model.Province;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

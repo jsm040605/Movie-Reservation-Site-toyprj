@@ -1,6 +1,6 @@
 package com.example.theater_proj.movie.entity;
 
-import com.example.theater_proj.movie.RoomGrade;
+import com.example.theater_proj.movie.model.RoomGrade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

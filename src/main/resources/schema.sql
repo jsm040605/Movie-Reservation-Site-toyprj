@@ -68,7 +68,8 @@ CREATE TABLE `Room`
 CREATE TABLE `Screening`
 (
     `screening_id`   BIGINT   NOT NULL AUTO_INCREMENT,
-    `screening_time` DATETIME NOT NULL,
+    `start_time` DATETIME NOT NULL,
+    `end_time` DATETIME NOT NULL,
     `price`          INT NULL,
     `movie_id`       BIGINT   NOT NULL,
     `room_id`        BIGINT   NOT NULL,

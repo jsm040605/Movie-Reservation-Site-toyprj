@@ -1,7 +1,6 @@
 package com.example.theater_proj.movie.dto.response;
 
-import com.example.theater_proj.movie.RoomGrade;
-import lombok.Getter;
+import com.example.theater_proj.movie.model.RoomGrade;
 
 import java.util.List;
 

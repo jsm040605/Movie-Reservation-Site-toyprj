@@ -1,18 +1,13 @@
 package com.example.theater_proj.global.common.config;
 
-import com.example.theater_proj.movie.Province;
-import com.example.theater_proj.movie.RoomGrade;
 import com.example.theater_proj.movie.entity.*;
 import com.example.theater_proj.movie.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component

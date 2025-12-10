@@ -1,6 +1,6 @@
 package com.example.theater_proj.movie.dto.response;
 
-import com.example.theater_proj.movie.SeatsBookingStatus;
+import com.example.theater_proj.movie.model.SeatsBookingStatus;
 
 public record ReservedInfoDTO(
         Integer reservationId,

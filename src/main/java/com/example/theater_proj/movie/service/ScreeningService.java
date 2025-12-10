@@ -1,6 +1,6 @@
 package com.example.theater_proj.movie.service;
 
-import com.example.theater_proj.movie.SeatsBookingStatus;
+import com.example.theater_proj.movie.model.SeatsBookingStatus;
 import com.example.theater_proj.movie.dto.response.RetrieveScreeningDTO;
 import com.example.theater_proj.movie.dto.response.RoomScreeningDTO;
 import com.example.theater_proj.movie.dto.response.SeatsDTO;

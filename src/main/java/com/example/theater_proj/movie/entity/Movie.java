@@ -1,5 +1,6 @@
 package com.example.theater_proj.movie.entity;
 
+import com.example.theater_proj.movie.model.AgeRating;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,17 +19,22 @@ public class Movie {
     @Column(name = "movie_id")
     private Integer id;
     private String title;
-    private String description;
-    private String genre;
 
+    @Column(name = "runtime")
     private Integer runningTime;
+    private String genre;
+    private String description;
 
-    public Movie(Integer id, String title, String description, String genre, Integer runningTime) {
+    @Enumerated(EnumType.STRING)
+    private AgeRating age_rating;
+
+    public Movie(Integer id, String title, Integer runTime, String genre, String description, AgeRating age_rating) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.runningTime = runTime;
         this.genre = genre;
-        this.runningTime = runningTime;
+        this.description = description;
+        this.age_rating = age_rating;
     }
 
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
