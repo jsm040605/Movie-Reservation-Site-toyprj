@@ -1,4 +1,4 @@
-package com.example.theater_proj.global.config;
+package com.example.theater_proj.global.common.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

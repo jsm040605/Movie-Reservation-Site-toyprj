@@ -16,5 +16,9 @@ spring:
       settings:
         web-allow-others: true
       enabled: true
+jwt:
+  secret: "theaterprojectsecretkey1234theaterprojectsecretkey1234theaterprojectsecretkey1234"
+  access-token-expiration-ms: 360000
+  refresh-token-expiration-ms: 1209600000
 server:
   port: 8088

@@ -1,4 +1,4 @@
-package com.example.theater_proj.global.config;
+package com.example.theater_proj.global.common.config;
 
 import com.example.theater_proj.movie.entity.*;
 import com.example.theater_proj.movie.repository.*;

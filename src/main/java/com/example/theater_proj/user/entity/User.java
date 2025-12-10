@@ -1,6 +1,6 @@
 package com.example.theater_proj.user.entity;
 
-import com.example.theater_proj.global.model.Status;
+import com.example.theater_proj.global.common.model.Status;
 import com.example.theater_proj.user.model.UserGrade;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,6 +46,7 @@ public class User {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.status = Status.ACTIVE;
+        this.userGrade = UserGrade.BRONZE;
         this.createdAt = new Timestamp(System.currentTimeMillis());
         this.updatedAt = new Timestamp(System.currentTimeMillis());
 
