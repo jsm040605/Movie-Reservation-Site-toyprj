@@ -24,3 +24,7 @@ VALUES
     ('2025-10-09 09:10:00', 1, 2, NULL), -- s2: movie_id=1, room_id=2
     ('2025-10-09 12:30:00', 3, 1, NULL), -- s3: movie_id=3, room_id=1
     ('2025-10-10 09:00:00', 2, 3, NULL); -- s4: movie_id=2, room_id=3
+
+
+INSERT INTO users (name, email, phone_number, password, user_status, created_at, updated_at)
+VALUES ('hello', 'asdf@asdf', '010-1234-5678', 'pass1234', 'ACTIVE',NOW(), NOW())

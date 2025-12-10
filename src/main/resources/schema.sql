@@ -130,3 +130,11 @@ CREATE TABLE `Reservation_Detail`
     CONSTRAINT FK_Seats_TO_Reservation_Detail_1 FOREIGN KEY (seats_id)
         REFERENCES Seats (seats_id)
 );
+
+CREATE TABLE refresh_tokens
+(
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username      VARCHAR(50)  NOT NULL UNIQUE,
+    refresh_token VARCHAR(500) NOT NULL UNIQUE,
+    expires_at    TIMESTAMP    NOT NULL
+);
