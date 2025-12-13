@@ -90,13 +90,13 @@ CREATE TABLE `Reservation`
     `booking_status` VARCHAR(20) NULL,
     `total_amount`   INT NULL,
     `payment_status` VARCHAR(20) NULL,
-    `user_id`        BIGINT NOT NULL,
+--     `user_id`        BIGINT NOT NULL,
     `screening_id`   BIGINT NOT NULL,
 
     CONSTRAINT PK_RESERVATION PRIMARY KEY (reservation_id),
 
-    CONSTRAINT FK_Users_TO_Reservation_1 FOREIGN KEY (user_id)
-        REFERENCES Users (user_id),
+--     CONSTRAINT FK_Users_TO_Reservation_1 FOREIGN KEY (user_id)
+--         REFERENCES Users (user_id),
 
     CONSTRAINT FK_Screening_TO_Reservation_1 FOREIGN KEY (screening_id)
         REFERENCES Screening (screening_id)

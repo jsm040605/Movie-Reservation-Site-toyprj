@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ReservationDetail {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_detail_id")
     private Integer id;
 
@@ -23,7 +23,7 @@ public class ReservationDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "seat_id")
+    @JoinColumn(name = "seats_id")
     private Seats seat;
 
     public ReservationDetail(Seats seat) {

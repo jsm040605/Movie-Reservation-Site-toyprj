@@ -1,5 +1,7 @@
 package com.example.theater_proj.movie.service;
 
+import com.example.theater_proj.movie.exception.MovieNotFoundException;
+import com.example.theater_proj.movie.model.PaymentStatus;
 import com.example.theater_proj.movie.model.SeatsBookingStatus;
 import com.example.theater_proj.movie.dto.response.*;
 import com.example.theater_proj.movie.entity.*;
@@ -7,10 +9,7 @@ import com.example.theater_proj.movie.exception.AlreadyReservedException;
 import com.example.theater_proj.movie.repository.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ReservationService {
@@ -45,6 +44,7 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         reservation.setScreening(screening);
         reservation.setBookingStatus(SeatsBookingStatus.LOCKED);
+        reservation.setPaymentStauts(PaymentStatus.YET);
 
         int totalPrice = price * seats.size();
         reservation.setTotalPrice(totalPrice);
@@ -58,6 +58,30 @@ public class ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return convertToReservationReseponseDTO(screening, seats, savedReservation);
+    }
+
+    public ReservationResponse findReservationById(int id) {
+        Optional<Reservation> reserv = reservationRepository.findById(id);
+
+        if (!reserv.isPresent()) {
+            throw new IllegalArgumentException("id- " + id);
+        }
+
+        Reservation reservation = reserv.get();
+
+
+        List<Seats> seats = new ArrayList<>();
+
+        List<ReservationDetail> reservationDetails = reservation.getReservationDetails();
+        for (ReservationDetail reservationDetail : reservationDetails) {
+            seats.add(reservationDetail.getSeat());
+        }
+
+        return convertToReservationReseponseDTO(
+                reservation.getScreening(),
+                seats,
+                reservation
+        );
     }
 
     public Map<Integer, SeatsBookingStatus> findReservationSeatsBy(Screening screening){
@@ -93,7 +117,9 @@ public class ReservationService {
         ReservedInfoDTO reservedInfoDTO = new ReservedInfoDTO(
                 reservation.getId(),
                 reservation.getTotalPrice(),
-                reservation.getBookingStatus());
+                reservation.getBookingStatus(),
+                reservation.getPaymentStauts()
+        );
 
         return new ReservationResponse(
                 movieDTO,
