@@ -1,10 +1,7 @@
 package com.example.theater_proj.movie;
 
 import com.example.theater_proj.movie.dto.request.ReservationRequest;
-import com.example.theater_proj.movie.dto.response.ReservationResponse;
-import com.example.theater_proj.movie.dto.response.RetrieveAllMoviesDTO;
-import com.example.theater_proj.movie.dto.response.RetrieveScreeningDTO;
-import com.example.theater_proj.movie.dto.response.RoomScreeningDTO;
+import com.example.theater_proj.movie.dto.response.*;
 import com.example.theater_proj.movie.entity.Movie;
 import com.example.theater_proj.movie.entity.Reservation;
 import com.example.theater_proj.movie.entity.Theater;
@@ -40,7 +37,7 @@ public class MovieController {
         this.reservationService = reservationService;
     }
 
-    //영화관 목록 조회
+    //영화 목록 조회
     @GetMapping("/movies")
     public ResponseEntity<List<RetrieveAllMoviesDTO>> retrieveAllMovies(){
         List<RetrieveAllMoviesDTO> movies = movieService.findAllMovies();
@@ -61,7 +58,7 @@ public class MovieController {
 
     //영화관 조회
     @GetMapping("/theaters")
-    public List<Theater> retreiveTheatersByProvince(@RequestParam("province") List<String> provinces){
+    public List<TheaterListResponse> retreiveTheatersByProvince(@RequestParam("province") List<String> provinces){
         return theaterService.findTheatersByProvinces(provinces);
     }
     

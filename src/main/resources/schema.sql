@@ -90,6 +90,7 @@ CREATE TABLE `Reservation`
     `booking_status` VARCHAR(20) NULL,
     `total_amount`   INT NULL,
     `payment_status` VARCHAR(20) NULL,
+    `created_at`     DATETIME NOT NULL,
 --     `user_id`        BIGINT NOT NULL,
     `screening_id`   BIGINT NOT NULL,
 
@@ -126,7 +127,8 @@ CREATE TABLE `Reservation_Detail`
     CONSTRAINT PK_RESERVATION_DETAIL PRIMARY KEY (reservation_detail_id),
 
     CONSTRAINT FK_Reservation_TO_Reservation_Detail_1 FOREIGN KEY (reservation_id)
-        REFERENCES Reservation (reservation_id),
+        REFERENCES Reservation (reservation_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT FK_Seats_TO_Reservation_Detail_1 FOREIGN KEY (seats_id)
         REFERENCES Seats (seats_id)

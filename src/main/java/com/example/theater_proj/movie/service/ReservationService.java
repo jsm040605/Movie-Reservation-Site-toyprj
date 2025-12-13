@@ -9,6 +9,7 @@ import com.example.theater_proj.movie.exception.AlreadyReservedException;
 import com.example.theater_proj.movie.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -45,6 +46,7 @@ public class ReservationService {
         reservation.setScreening(screening);
         reservation.setBookingStatus(SeatsBookingStatus.LOCKED);
         reservation.setPaymentStauts(PaymentStatus.YET);
+        reservation.setCreated_at(LocalDateTime.now());
 
         int totalPrice = price * seats.size();
         reservation.setTotalPrice(totalPrice);
@@ -118,7 +120,8 @@ public class ReservationService {
                 reservation.getId(),
                 reservation.getTotalPrice(),
                 reservation.getBookingStatus(),
-                reservation.getPaymentStauts()
+                reservation.getPaymentStauts(),
+                reservation.getCreated_at()
         );
 
         return new ReservationResponse(
