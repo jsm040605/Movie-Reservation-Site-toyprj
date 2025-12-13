@@ -91,4 +91,10 @@ public class MovieController {
 
         return new ResponseEntity<>(reservationResponse, HttpStatus.CREATED);
     }
+
+    //예약 조회
+    @GetMapping("/reservations/{id}")
+    public ReservationResponse retrieveReservationById(@PathVariable int id){
+        return reservationService.findReservationById(id);
+    }
 }
