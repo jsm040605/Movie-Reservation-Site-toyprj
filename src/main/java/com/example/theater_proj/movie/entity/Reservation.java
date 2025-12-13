@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(
+        name = "Reservation",
+        indexes = @Index(name = "index_PaymentStatus_CreatedAt", columnList = "payment_status, created_at")
+)
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +34,8 @@ public class Reservation {
 
     @Column(name = "payment_status")
     private PaymentStatus paymentStauts;
+
+    private LocalDateTime created_at;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore

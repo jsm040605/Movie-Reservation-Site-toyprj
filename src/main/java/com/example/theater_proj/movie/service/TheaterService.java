@@ -1,5 +1,6 @@
 package com.example.theater_proj.movie.service;
 
+import com.example.theater_proj.movie.dto.response.TheaterListResponse;
 import com.example.theater_proj.movie.model.Province;
 import com.example.theater_proj.movie.entity.Theater;
 import com.example.theater_proj.movie.repository.JpaTheaterRepository;
@@ -17,7 +18,7 @@ public class TheaterService {
         this.theaterRepository = theaterRepository;
     }
 
-    public List<Theater> findTheatersByProvinces(List<String> provinceNames){
+    public List<TheaterListResponse> findTheatersByProvinces(List<String> provinceNames){
         if (provinceNames == null || provinceNames.isEmpty()){
             return Collections.emptyList();
         }
@@ -26,6 +27,12 @@ public class TheaterService {
                 .map(Province::fromFullName)
                 .collect(Collectors.toList());
 
-        return theaterRepository.findByProvinceIn(provinces);
+        List<Theater> theaters = theaterRepository.findByProvinceIn(provinces);
+
+        return this.convertDTO(theaters);
+    }
+
+    private List<TheaterListResponse> convertDTO(List<Theater> theaters){
+        return theaters.stream().map(TheaterListResponse::fromEntity).collect(Collectors.toList());
     }
 }
