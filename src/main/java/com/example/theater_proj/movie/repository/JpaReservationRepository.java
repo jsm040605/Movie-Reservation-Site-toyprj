@@ -1,6 +1,7 @@
 package com.example.theater_proj.movie.repository;
 
 import com.example.theater_proj.movie.entity.Reservation;
+import com.example.theater_proj.movie.entity.Screening;
 import com.example.theater_proj.movie.model.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,8 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface JpaReservationRepository extends JpaRepository<Reservation, Integer> {
-    List<Reservation> getReservationById(int id);
+public interface JpaReservationRepository extends JpaRepository<Reservation, Long> {
 
     @Modifying
     @Query(
@@ -20,4 +20,5 @@ public interface JpaReservationRepository extends JpaRepository<Reservation, Int
     )
     void deleteExpiredReservation(
             @Param("status") PaymentStatus status, @Param("cut_off_time") LocalDateTime cut_off_time);
+
 }

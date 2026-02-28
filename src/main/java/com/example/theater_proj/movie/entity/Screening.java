@@ -1,58 +1,74 @@
 package com.example.theater_proj.movie.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Screening {
     @Id
     @GeneratedValue
     @Column(name = "screening_id")
-    private Integer id;
+    private Long id;
 
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
+    @Column(name = "screening_time")
+    private LocalDateTime screeningTime;
 
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private int remainQuantity;
+
+    private int price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
-    @JsonIgnore
     private Movie movie;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
-    @JsonIgnore
     private Room room;
 
-    public Screening(Integer id, LocalDateTime startTime, Movie movie, Room room) {
+    public Screening(Long id, LocalDateTime screeningTime, int remainQuantity, Movie movie, Room room) {
         this.id = id;
-        this.startTime = startTime;
-//        this.endTime = calculateEndTime(startTime, movie.getRunningTime());
+        this.screeningTime = screeningTime;
+        this.remainQuantity = remainQuantity;
         this.movie = movie;
         this.room = room;
     }
 
-    @PrePersist
-    @PreUpdate
-    public void caculateEndTime(){
-        if (this.startTime != null && this.movie != null && this.room != null){
-            this.endTime = this.startTime.plusMinutes(movie.getRunningTime());
-        }
+    @OneToMany(mappedBy = "screening")
+    private List<ReservationDetail> reservationDetails = new ArrayList<>();
+
+    //연관관계 mapping method
+    public void addReservationDetail(ReservationDetail reservationDetail) {
+        reservationDetails.add(reservationDetail);
     }
 
-    @OneToMany(mappedBy = "screening", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Reservation> reservations;
+    //business Method
+    public void increaseSeatsCount(int canceledQuantity){
+        remainQuantity += remainQuantity;
+    }
+
+    public void reduceSeatsCount(int reservedQuantity) {
+        remainQuantity -= reservedQuantity;
+    }
+
+    public LocalDateTime calculateEndTime(){
+        return screeningTime.plusMinutes(movie.getRunningTime());
+    }
+
+    //일치하는 예약정보를 찾는 로직
+    public boolean checkReservedSeats(Seats seat) {
+        return reservationDetails.stream()
+                .anyMatch(reservationDetail ->
+                        reservationDetail.getSeat().getId().equals(seat.getId())
+                );
+    }
+
 }

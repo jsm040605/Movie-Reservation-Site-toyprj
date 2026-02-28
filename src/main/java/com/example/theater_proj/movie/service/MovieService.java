@@ -1,35 +1,34 @@
 package com.example.theater_proj.movie.service;
 
-import com.example.theater_proj.movie.dto.response.RetrieveAllMoviesDTO;
+import com.example.theater_proj.movie.dto.response.movie.FindAllMovies;
+import com.example.theater_proj.movie.dto.response.movie.RetrieveMovieResponse;
+import com.example.theater_proj.movie.dto.response.movie.AllMovieResponse;
 import com.example.theater_proj.movie.entity.Movie;
 import com.example.theater_proj.movie.exception.MovieNotFoundException;
 import com.example.theater_proj.movie.repository.JpaMovieRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MovieService {
-    private JpaMovieRepository movieRepository;
+    private final JpaMovieRepository movieRepository;
 
-    public MovieService(JpaMovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
+    public RetrieveMovieResponse findMovieById(Long id){
+        Movie findMovie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException("movie not found"));
+
+        return RetrieveMovieResponse.fromEntity(findMovie);
     }
 
-    public Movie findMovieById(int id){
-        Optional<Movie> movie = movieRepository.findById(id);
-
-        if (!movie.isPresent()) {
-            throw new MovieNotFoundException("id- " + id);
-        }
-        return movie.get();
-    }
-
-    public List<RetrieveAllMoviesDTO> findAllMovies(){
+    public AllMovieResponse findAllMovies(){
         List<Movie> movies = movieRepository.findAll();
 
-        return movies.stream().map(RetrieveAllMoviesDTO::fromEntity).collect(Collectors.toList());
+        return new AllMovieResponse(movies.stream().map(FindAllMovies::fromEntity).collect(Collectors.toList()));
     }
 }

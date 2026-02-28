@@ -7,30 +7,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Room {
     @Id
     @GeneratedValue
     @Column(name = "room_id")
-    private Integer id;
+    private Long id;
+
     private Integer roomNumber;
 
     @Enumerated(EnumType.STRING)
     private RoomGrade roomGrade;
+
     private Integer rowCount;
+
     private Integer colCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "theater_id")
     private Theater theater;
 
-    public Room(Integer id, Integer roomNumber, RoomGrade roomGrade, Integer rowCount, Integer colCount, Theater theater) {
+    public Room(Long id, Integer roomNumber, RoomGrade roomGrade, Integer rowCount, Integer colCount, Theater theater) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.roomGrade = roomGrade;
@@ -39,11 +41,6 @@ public class Room {
         this.theater = theater;
     }
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Seats> seats;
-
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Screening> screeningList;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seats> seats = new ArrayList<>();
 }

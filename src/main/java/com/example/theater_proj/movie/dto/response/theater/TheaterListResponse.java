@@ -1,9 +1,9 @@
-package com.example.theater_proj.movie.dto.response;
+package com.example.theater_proj.movie.dto.response.theater;
 
 import com.example.theater_proj.movie.entity.Theater;
 
 public record TheaterListResponse(
-        Integer theater_id,
+        Long theater_id,
         String name,
         String address
 ) {

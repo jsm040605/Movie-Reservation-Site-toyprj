@@ -1,13 +1,16 @@
 package com.example.theater_proj.movie.service;
 
+import com.example.theater_proj.movie.dto.response.screening.list.AllScreeningsResponse;
+import com.example.theater_proj.movie.dto.response.screening.list.ScreeningInfoIcludedRoom;
+import com.example.theater_proj.movie.dto.response.screening.list.ScreeningSimpleInfo;
 import com.example.theater_proj.movie.model.SeatsBookingStatus;
-import com.example.theater_proj.movie.dto.response.RetrieveScreeningDTO;
-import com.example.theater_proj.movie.dto.response.RoomScreeningDTO;
-import com.example.theater_proj.movie.dto.response.SeatsDTO;
-import com.example.theater_proj.movie.dto.response.SingleSreeningDTO;
+import com.example.theater_proj.movie.dto.response.screening.retrieve.RetrieveScreeningResponse;
+import com.example.theater_proj.movie.dto.response.screening.retrieve.SeatsInfo;
 import com.example.theater_proj.movie.entity.*;
 import com.example.theater_proj.movie.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,86 +18,61 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ScreeningService {
     private final JpaScreeningRepository screeningRepository;
-    private final ReservationService reservationService;
-
-    public ScreeningService(
-            JpaScreeningRepository screeningRepository,
-            ReservationService reservationService
-    ) {
-        this.screeningRepository = screeningRepository;
-        this.reservationService = reservationService;
-    }
+    private final JpaReservationRepository reservationRepository;
 
     //movie, theater, date로 필터링 한 뒤 상영 정보 보여주기
-    public List<RoomScreeningDTO> findScreeningsByMovieTheaterDate(int movieId, int theaterId, LocalDate date){
+    public AllScreeningsResponse findScreeningsByMovieTheaterDate(Long movieId, Long theaterId, LocalDate date){
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
         //날짜 별 특정 영화 전체 조회
         List<Screening> screenings = screeningRepository.findScreeningsByCriteria(movieId, theaterId, startOfDay, endOfDay);
+        //screening을 dto로 변환하면 room_id가 사라지는데 room_id로 그룹핑 하려면 room_id가 필요함.
 
-        Map<Room, List<Screening>> screeningGroup = screenings.stream().collect(Collectors.groupingBy(Screening::getRoom));
+        List<ScreeningInfoIcludedRoom> convertedScreenings = getConvertedScreenings(screenings);
 
-        return convertToRoomScreeningDTO(screeningGroup);
+        return new AllScreeningsResponse(convertedScreenings);
     }
 
-    public RetrieveScreeningDTO getSeatMap (int screening_id){
-        Screening screening = screeningRepository.findById(screening_id).get();
+    private List<ScreeningInfoIcludedRoom> getConvertedScreenings(List<Screening> screenings) {
+        return screenings.stream().collect(Collectors.groupingBy(Screening::getRoom)).entrySet().stream().map(
+                entry -> {
+                    Room room = entry.getKey();
+                    List<ScreeningSimpleInfo> simpleInfo = entry.getValue().stream().map(ScreeningSimpleInfo::fromEntity).toList();
 
-        //예약된 좌석 얻어오기
-        Map<Integer, SeatsBookingStatus> reservedSeats = reservationService.findReservationSeatsBy(screening);
+                    return new ScreeningInfoIcludedRoom(room.getRoomNumber(), room.getRoomGrade(), simpleInfo);
+                }
+        ).sorted(Comparator.comparing(ScreeningInfoIcludedRoom::roomNumber)).toList();
+    }
 
-        //SeatMap 만들어서 좌석 상태 표현
+    public RetrieveScreeningResponse getSeatMap (Long screening_id){
+        Screening screening = screeningRepository.findByIdWithDetail(screening_id).orElseThrow(IllegalArgumentException::new);
+
+        // SeatMap 만들어서 좌석 상태표현
         Room room = screening.getRoom();
         List<Seats> allSeats = room.getSeats();
 
         int rowCount = room.getRowCount();
         int colCount = room.getColCount();
 
-        SeatsDTO[][] seatMap = new SeatsDTO[colCount][rowCount];
+        SeatsInfo[][] seatMap = new SeatsInfo[colCount][rowCount];
 
         for (Seats seat : allSeats) {
-            SeatsBookingStatus seatsBookingStatus = reservedSeats.getOrDefault(seat.getId(), SeatsBookingStatus.AVAILABLE);
+            SeatsBookingStatus seatsBookingStatus = screening.checkReservedSeats(seat) ?
+                    SeatsBookingStatus.RESERVED :
+                    SeatsBookingStatus.AVAILABLE;
 
-            seatMap[seat.getCol()][seat.getRow()] = new SeatsDTO(seat.getId(), seat.getRow(), seat.getCol(), seatsBookingStatus);
+            seatMap[seat.getCol()][seat.getRow()] = new SeatsInfo(seat.getId(), seat.getRow(), seat.getCol(), seatsBookingStatus);
         }
 
-        RetrieveScreeningDTO retrieveScreeningDTO = new RetrieveScreeningDTO(
+        return new RetrieveScreeningResponse(
                 screening.getId(),
                 room.getRoomGrade(),
                 seatMap
-        );
-
-        return retrieveScreeningDTO;
-    }
-
-    private List<RoomScreeningDTO> convertToRoomScreeningDTO(Map<Room, List<Screening>> ScreeningGroup){
-        return ScreeningGroup.entrySet().stream().map(
-                entry -> {
-                    Room singleRoom = entry.getKey();
-                    List<SingleSreeningDTO> singleScreenigs = entry
-                            .getValue()
-                            .stream()
-                            .map(this::ConvertToDTOBy)
-                            .sorted(Comparator.comparing(SingleSreeningDTO::startTime)).toList();
-                    return new RoomScreeningDTO(singleRoom.getRoomNumber(), singleRoom.getRoomGrade(), singleScreenigs);
-                }
-        ).sorted(Comparator.comparing(RoomScreeningDTO::roomNumber)).toList();
-    }
-
-    private SingleSreeningDTO ConvertToDTOBy(Screening screening){
-        Room room = screening.getRoom();
-        int totalSeats = room.getRowCount() * room.getColCount();
-        int reservedSeats = screening.getReservations().size();
-        int remainSeats = totalSeats - reservedSeats;
-
-        return new SingleSreeningDTO(
-                screening.getId(),
-                screening.getStartTime(),
-                screening.getEndTime(),
-                remainSeats
         );
     }
 }

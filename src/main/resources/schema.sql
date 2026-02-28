@@ -68,9 +68,9 @@ CREATE TABLE `Room`
 CREATE TABLE `Screening`
 (
     `screening_id`   BIGINT   NOT NULL AUTO_INCREMENT,
-    `start_time` DATETIME NOT NULL,
-    `end_time` DATETIME NOT NULL,
-    `price`          INT NULL,
+    `screening_time` DATETIME NOT NULL,
+    `remain_quantity` INT NOT NULL,
+    `price`          INT NOT NULL,
     `movie_id`       BIGINT   NOT NULL,
     `room_id`        BIGINT   NOT NULL,
 
@@ -92,15 +92,11 @@ CREATE TABLE `Reservation`
     `payment_status` VARCHAR(20) NULL,
     `created_at`     DATETIME NOT NULL,
 --     `user_id`        BIGINT NOT NULL,
-    `screening_id`   BIGINT NOT NULL,
 
-    CONSTRAINT PK_RESERVATION PRIMARY KEY (reservation_id),
+    CONSTRAINT PK_RESERVATION PRIMARY KEY (reservation_id)
 
 --     CONSTRAINT FK_Users_TO_Reservation_1 FOREIGN KEY (user_id)
 --         REFERENCES Users (user_id),
-
-    CONSTRAINT FK_Screening_TO_Reservation_1 FOREIGN KEY (screening_id)
-        REFERENCES Screening (screening_id)
 );
 
 
@@ -121,10 +117,15 @@ CREATE TABLE `Seats`
 CREATE TABLE `Reservation_Detail`
 (
     `reservation_detail_id` BIGINT NOT NULL AUTO_INCREMENT,
+    `reservation_price`     INT    NOT NULL,
+    `screening_id`          BIGINT NOT NULL,
     `reservation_id`        BIGINT NOT NULL,
     `seats_id`              BIGINT NOT NULL,
 
     CONSTRAINT PK_RESERVATION_DETAIL PRIMARY KEY (reservation_detail_id),
+
+    CONSTRAINT FK_Screening_TO_Reservation_Detail_1 FOREIGN KEY (screening_id)
+        REFERENCES Screening (screening_id),
 
     CONSTRAINT FK_Reservation_TO_Reservation_Detail_1 FOREIGN KEY (reservation_id)
         REFERENCES Reservation (reservation_id)
