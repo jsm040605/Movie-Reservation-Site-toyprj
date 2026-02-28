@@ -6,8 +6,8 @@ import com.example.theater_proj.movie.model.PaymentStatus;
 import java.util.List;
 
 public record ReservationRequest(
-        int screeningId,
-        List<Integer> seatsIds,
+        Long screeningId,
+        List<Long> seatsIds,
         int price
 ) {
 

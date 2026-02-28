@@ -14,7 +14,7 @@ public class Seats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seats_id")
-    private int id;
+    private Long id;
 
     @Column(name = "seat_row")
     private int row;
@@ -23,7 +23,6 @@ public class Seats {
     private int col;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "room_id")
     private Room room;
 }

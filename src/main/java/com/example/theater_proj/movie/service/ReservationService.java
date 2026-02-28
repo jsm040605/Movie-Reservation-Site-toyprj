@@ -1,122 +1,64 @@
 package com.example.theater_proj.movie.service;
 
-import com.example.theater_proj.movie.exception.MovieNotFoundException;
-import com.example.theater_proj.movie.model.PaymentStatus;
-import com.example.theater_proj.movie.model.SeatsBookingStatus;
-import com.example.theater_proj.movie.dto.response.*;
+import com.example.theater_proj.movie.dto.response.reservation.*;
 import com.example.theater_proj.movie.entity.*;
-import com.example.theater_proj.movie.exception.AlreadyReservedException;
 import com.example.theater_proj.movie.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
     private final JpaReservationRepository reservationRepository;
     private final JpaScreeningRepository screeningRepository;
     private final JpaSeatRepository seatRepository;
 
-    public ReservationService(
-            JpaReservationRepository reservationRepository,
-            JpaScreeningRepository screeningRepository,
-            JpaSeatRepository seatRepository
-    ) {
-        this.reservationRepository = reservationRepository;
-        this.screeningRepository = screeningRepository;
-        this.seatRepository = seatRepository;
-    }
-
-    public ReservationResponse makeReservations(int screeningId, List<Integer> seatsIds, int price){
-        Screening screening = screeningRepository.findById(screeningId).get();
+    @Transactional
+    public ReservationResponse makeReservations(Long screeningId, List<Long> seatsIds) throws BadRequestException {
+        Screening screening = screeningRepository.findById(screeningId).orElseThrow(IllegalArgumentException::new);
         List<Seats> seats = seatRepository.findAllById(seatsIds);
 
-        Map<Integer, SeatsBookingStatus> reservedSeats = findReservationSeatsBy(screening);
-
+        //예약 상세는 좌석정보, 가격을 가져야 함.
+        List<ReservationDetail> reservationDetails = new ArrayList<>();
         for (Seats seat : seats) {
-            SeatsBookingStatus status = reservedSeats.getOrDefault(seat.getId(), SeatsBookingStatus.AVAILABLE);
-
-            if (!status.equals(SeatsBookingStatus.AVAILABLE)) {
-                throw new AlreadyReservedException("id: "+ seat.getId()+ " is already reserved");
-            }
+            reservationDetails.add(ReservationDetail.makeReservationDeatil(screening, seat));
         }
 
-        Reservation reservation = new Reservation();
-        reservation.setScreening(screening);
-        reservation.setBookingStatus(SeatsBookingStatus.LOCKED);
-        reservation.setPaymentStauts(PaymentStatus.YET);
-        reservation.setCreated_at(LocalDateTime.now());
-
-        int totalPrice = price * seats.size();
-        reservation.setTotalPrice(totalPrice);
-
-        for (Seats seat : seats) {
-            ReservationDetail reservationDetail = new ReservationDetail(seat);
-
-            reservation.addReservationDetail(reservationDetail);
-        }
-
+        Reservation reservation = Reservation.makeReservation(screening, reservationDetails);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return convertToReservationReseponseDTO(screening, seats, savedReservation);
     }
 
-    public ReservationResponse findReservationById(int id) {
-        Optional<Reservation> reserv = reservationRepository.findById(id);
+    @Transactional(readOnly = true)
+    public ReservationResponse findReservationById(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(IllegalArgumentException::new);
 
-        if (!reserv.isPresent()) {
-            throw new IllegalArgumentException("id- " + id);
-        }
+        List<Seats> reservedSeats = reservation.getReservedSeats();
+        Screening screening = reservation.getScreening();
 
-        Reservation reservation = reserv.get();
-
-
-        List<Seats> seats = new ArrayList<>();
-
-        List<ReservationDetail> reservationDetails = reservation.getReservationDetails();
-        for (ReservationDetail reservationDetail : reservationDetails) {
-            seats.add(reservationDetail.getSeat());
-        }
-
-        return convertToReservationReseponseDTO(
-                reservation.getScreening(),
-                seats,
-                reservation
-        );
-    }
-
-    public Map<Integer, SeatsBookingStatus> findReservationSeatsBy(Screening screening){
-        List<Reservation> reservations = screening.getReservations();
-
-        Map<Integer, SeatsBookingStatus> reservedSeats = new HashMap<>();
-
-        for (Reservation reservation : reservations) {
-            List<ReservationDetail> reservationDetails = reservation.getReservationDetails();
-            for (ReservationDetail reservationDetail : reservationDetails) {
-                Seats seat = reservationDetail.getSeat();
-                reservedSeats.put(seat.getId(), reservation.getBookingStatus());
-            }
-        }
-
-        return reservedSeats;
+        return convertToReservationReseponseDTO(screening, reservedSeats, reservation);
     }
 
     private ReservationResponse convertToReservationReseponseDTO(Screening screening, List<Seats> seats, Reservation reservation) {
         Movie movie = screening.getMovie();
-        ReservedMovieDTO movieDTO = new ReservedMovieDTO(movie.getId(), movie.getTitle(), movie.getRunningTime());
-        ReservedScreeningDTO screeningDTO = new ReservedScreeningDTO(screening.getStartTime(), screening.getEndTime());
+        ReservedMovie movieDTO = ReservedMovie.fromEntity(movie);
+        ReservedScreening screeningDTO = ReservedScreening.fromEntity(screening);
 
         Room room = screening.getRoom();
-        ReservedRoomDTO roomDTO = new ReservedRoomDTO(room.getRoomNumber(), room.getRoomGrade());
+        ReservedRoom roomDTO = ReservedRoom.fromEntity(room);
 
-        List<ReservedSeatsDTO> reservedSeatsDTOS = new ArrayList<>();
+        List<ReservedSeats> reservedSeatsDTOS = new ArrayList<>();
         for (Seats seat : seats) {
-            ReservedSeatsDTO seatsDTO = new ReservedSeatsDTO(seat.getRow(), seat.getCol());
+            ReservedSeats seatsDTO = ReservedSeats.fromEntity(seat);
             reservedSeatsDTOS.add(seatsDTO);
         }
 
-        ReservedInfoDTO reservedInfoDTO = new ReservedInfoDTO(
+        ReservedInfo reservedInfoDTO = new ReservedInfo(
                 reservation.getId(),
                 reservation.getTotalPrice(),
                 reservation.getBookingStatus(),

@@ -7,15 +7,22 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
     properties:
-      hibernate.hibernate.default_batch_fetch_size: 100
+      hibernate:
+        # show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
   h2:
     console:
       settings:
         web-allow-others: true
       enabled: true
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.orm.jdbc.bind: trace
+
 jwt:
   secret: "theaterprojectsecretkey1234theaterprojectsecretkey1234theaterprojectsecretkey1234"
   access-token-expiration-ms: 360000

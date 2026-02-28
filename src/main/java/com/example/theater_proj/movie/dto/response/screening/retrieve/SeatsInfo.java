@@ -1,9 +1,9 @@
-package com.example.theater_proj.movie.dto.response;
+package com.example.theater_proj.movie.dto.response.screening.retrieve;
 
 import com.example.theater_proj.movie.model.SeatsBookingStatus;
 
-public record SeatsDTO(
-        int seat_id,
+public record SeatsInfo(
+        Long seat_id,
         int row,
         int col,
         SeatsBookingStatus seatsBookingStatus
